@@ -1,97 +1,30 @@
-{
-  "meta": {"title": null},
-  "payload":
-    {
-      "codeViewBlobLayoutRoute":
-        {
-          "codeLineWrapEnabled": false,
-          "refInfo":
-            {
-              "name": "main",
-              "listCacheKey": "v0:1730897359.0",
-              "canEdit": true,
-              "refType": "branch",
-              "currentOid": "b885b3bf63bd7971d4108185add18adeddd81fc3",
-              "canEditOnDefaultBranch": true,
-              "fileExistsOnDefault": true,
-            },
-          "path": ".github/workflows/snake.yml",
-          "blob":
-            {
-              "copilotSWEAgentEnabled": false,
-              "dependabotInfo":
-                {
-                  "showConfigurationBanner": false,
-                  "configFilePath": null,
-                  "networkDependabotPath": "/tobimey/tobimey/network/updates",
-                  "dismissConfigurationNoticePath": "/settings/dismiss-notice/dependabot_configuration_notice",
-                  "configurationNoticeDismissed": false,
-                },
-              "displayName": "snake.yml",
-              "displayUrl": "https://github.com/tobimey/tobimey/blob/main/.github/workflows/snake.yml?raw=true",
-              "headerInfo":
-                {
-                  "blobSize": "1.43 KB",
-                  "deleteTooltip": "Fork this repository and delete the file",
-                  "editTooltip": "Fork this repository and edit the file",
-                  "ghDesktopPath": "https://desktop.github.com",
-                  "isGitLfs": false,
-                  "onBranch": true,
-                  "shortPath": "154c354",
-                  "siteNavLoginPath": "/login?return_to=https%3A%2F%2Fgithub.com%2Ftobimey%2Ftobimey%2F_layout%2Fmain%2F.github%2Fworkflows%2Fsnake.yml",
-                  "isCSV": false,
-                  "isRichtext": false,
-                  "lineInfo": {"truncatedLoc": "42", "truncatedSloc": "41"},
-                  "mode": "file",
-                },
-              "image": false,
-              "isCodeownersFile": null,
-              "isPlain": false,
-              "isValidLegacyIssueTemplate": false,
-              "isIssueTemplate": false,
-              "isDiscussionTemplate": false,
-              "language": "YAML",
-              "languageID": 407,
-              "large": false,
-              "planSupportInfo":
-                {
-                  "repoIsFork": null,
-                  "repoOwnedByCurrentUser": null,
-                  "requestFullPath": "/tobimey/tobimey/_layout/main/.github/workflows/snake.yml",
-                  "showFreeOrgGatedFeatureMessage": null,
-                  "showPlanSupportBanner": null,
-                  "upgradeDataAttributes": null,
-                  "upgradePath": null,
-                },
-              "publishBannersInfo":
-                {
-                  "dismissActionNoticePath": "/settings/dismiss-notice/publish_action_from_dockerfile",
-                  "releasePath": "/tobimey/tobimey/releases/new?marketplace=true",
-                  "showPublishActionBanner": false,
-                },
-              "rawBlobUrl": "https://github.com/tobimey/tobimey/raw/refs/heads/main/.github/workflows/snake.yml",
-              "renderImageOrRaw": false,
-              "shortPath": null,
-              "symbolsEnabled": true,
-              "tabSize": 4,
-              "topBannersInfo":
-                {
-                  "overridingGlobalFundingFile": false,
-                  "globalPreferredFundingPath": null,
-                  "showInvalidCitationWarning": false,
-                  "citationHelpUrl": "https://docs.github.com/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/about-citation-files",
-                  "actionsOnboardingTip": null,
-                },
-              "truncated": false,
-              "viewable": true,
-              "workflowRedirectUrl": "/tobimey/tobimey/actions/workflows/snake.yml",
-            },
-          "copilotInfo": null,
-          "copilotAccessAllowed": true,
-          "copilotSpacesEnabled": true,
-          "modelsAccessAllowed": false,
-          "modelsRepoIntegrationEnabled": false,
-          "isMarketplaceEnabled": true,
-        },
-    },
-}
+name: Generate Snake
+
+on:
+  schedule:
+    - cron: "0 */12 * * *"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Generate Contribution Snake
+        uses: Platane/snk/svg-only@v3
+        id: snake-gif
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/github-snake.svg
+            dist/github-snake-dark.svg?palette=github-dark
+
+      - name: Push snake to output branch
+        uses: crazy-max/ghaction-github-pages@v3
+        with:
+          target_branch: output
+          build_dir: dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
